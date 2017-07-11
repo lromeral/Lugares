@@ -1,10 +1,12 @@
 package com.foromtb.luroga.lugares.modelo;
 
+import java.io.Serializable;
+
 /**
  * Created by LuisR on 11/07/2017.
  */
 
-public class Contacto {
+public class Contacto implements Serializable{
     private String id;
     private String name;
     private String email;

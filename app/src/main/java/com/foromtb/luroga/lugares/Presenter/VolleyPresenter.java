@@ -13,14 +13,21 @@ import com.android.volley.toolbox.JsonArrayRequest;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
+import com.foromtb.luroga.lugares.ListadoLugares_Fragment;
 import com.foromtb.luroga.lugares.modelo.Contacto;
 import com.foromtb.luroga.lugares.modelo.Contactos;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 
+import org.json.JSONArray;
+import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.lang.reflect.Array;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 /**
@@ -33,7 +40,8 @@ public class VolleyPresenter {
     private RequestQueue mRequestQueue;
     private static VolleyPresenter sInstance;
 
-    public static VolleyPresenter getInstance(Context context) {
+    public static VolleyPresenter getInstance(Context context
+    ) {
         if(sInstance == null){
             sInstance = new VolleyPresenter(context);
         }
@@ -71,32 +79,49 @@ public class VolleyPresenter {
     }
 
     public void jsonRequest (String urlJson){
-        JsonObjectRequest jObjectRequest = new JsonObjectRequest(
+
+        JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(
                 Request.Method.GET,
-                urlJson,
-                null,
+                urlJson, null,
                 new Response.Listener<JSONObject>() {
                     @Override
                     public void onResponse(JSONObject response) {
-                        Log.d(TAG,"JSON OK-> " + response );
-
+                        Log.d(TAG,"Array");
                         getContactos(response);
+
                     }
                 },
                 new Response.ErrorListener() {
                     @Override
                     public void onErrorResponse(VolleyError error) {
-                        Log.d (TAG,"JSON Error-> " + error);
+                        Log.d(TAG,"Error " + error);
+
                     }
                 });
-        getRequestQueue().add(jObjectRequest);
+
+        getRequestQueue().add(jsonObjectRequest);
     }
 
-    public void getContactos(JSONObject jObject){
-        GsonBuilder gsonBuilder = new GsonBuilder();
-        Gson gson = gsonBuilder.create();
-        Contacto test = gson.fromJson(jObject.toString(),Contacto.class);
-        Log.d(TAG,test.toString());
+    public void getContactos(JSONObject jsonObject){
+
+        Gson gson = new Gson();
+        try {
+            JSONArray jsonArray = jsonObject.getJSONArray("contacts");
+            for (int i =0; i< jsonArray.length();i++){
+                JSONObject j = jsonArray.getJSONObject(i);
+                Contacto c = gson.fromJson(j.toString(),Contacto.class);
+                Contactos.getInstance().addContacto(c);
+                Log.d(TAG,c.getName());
+
+            }
+
+            Log.d (TAG,String.valueOf(Contactos.getContactos().size()));
+        }
+        catch (JSONException e){
+            Log.d(TAG,e.toString());
+
+        }
+
         return;
 
 

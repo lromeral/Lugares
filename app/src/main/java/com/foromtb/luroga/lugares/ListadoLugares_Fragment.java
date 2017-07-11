@@ -10,7 +10,9 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
+import com.foromtb.luroga.lugares.Adapter.ContactoAdapter;
 import com.foromtb.luroga.lugares.Presenter.VolleyPresenter;
+import com.foromtb.luroga.lugares.modelo.Contactos;
 import com.foromtb.luroga.lugares.modelo.Lugar;
 import com.foromtb.luroga.lugares.modelo.Lugares;
 
@@ -26,6 +28,7 @@ public class ListadoLugares_Fragment extends Fragment {
     private List<Lugar> mLugares;
     private final static String POKEMON_JSON="https://raw.githubusercontent.com/BrunnerLivio/PokemonDataGraber/master/output.json";
     private final static String ANDROIDHIVE_CONTACTS="http://api.androidhive.info/contacts/";
+    private final static String OBJETO_JSON="https://graph.facebook.com/me";
 
     public static ListadoLugares_Fragment newInstance() {
 
@@ -44,14 +47,19 @@ public class ListadoLugares_Fragment extends Fragment {
         mLugares = Lugares.getLugares();
         mRecyclerView = (RecyclerView)v.findViewById(R.id.recyclerViewListado);
         mRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
-        mRecyclerView.setAdapter(new LugarAdaptater(mLugares));
+        //mRecyclerView.setAdapter(new LugarAdaptater(mLugares));
         init();
         return v;
+    }
+
+    public void updateUI(){
+        mRecyclerView.setAdapter(new ContactoAdapter(Contactos.getContactos()));
     }
 
     private void init(){
         //VolleyPresenter.getInstance(getActivity()).VolleyRequest("https://raw.githubusercontent.com/BrunnerLivio/PokemonDataGraber/master/output.json");
         VolleyPresenter.getInstance(getActivity()).jsonRequest(ANDROIDHIVE_CONTACTS);
+        updateUI();
     }
 
     private class LugarHolder extends RecyclerView.ViewHolder{
@@ -62,11 +70,11 @@ public class ListadoLugares_Fragment extends Fragment {
         public LugarHolder(LayoutInflater layoutInflater, ViewGroup parent, int viewType){
             super(layoutInflater.inflate(viewType,parent,false));
             //Items de la lista
-            //itemLugarNombre= (TextView)itemView.findViewById(R.id.item_list_lugar_nombre);
+            itemLugarNombre= (TextView)itemView.findViewById(R.id.item_list_lugar_nombre);
         }
 
         private void bind(Lugar l){
-            //itemLugarNombre.setText(l.getNombre());
+            itemLugarNombre.setText(l.getNombre());
         }
     }
 
