@@ -28,6 +28,7 @@ public class ListadoLugares_Fragment extends Fragment implements BaseView {
     private final static String POKEMON_JSON="https://raw.githubusercontent.com/BrunnerLivio/PokemonDataGraber/master/output.json";
     private final static String ANDROIDHIVE_CONTACTS="http://api.androidhive.info/contacts/";
     private final static String OBJETO_JSON="https://graph.facebook.com/me";
+    private final static String FIREBASE_LUGARES = "https://lugares-2b3ff.firebaseio.com/lugares.json";
     private RecyclerView mRecyclerView;
     private List<Lugar> mLugares;
 
@@ -59,7 +60,8 @@ public class ListadoLugares_Fragment extends Fragment implements BaseView {
 
     private void init(){
         //VolleyPresenter.getInstance(getActivity()).VolleyRequest("https://raw.githubusercontent.com/BrunnerLivio/PokemonDataGraber/master/output.json");
-        VolleyPresenter.getInstance(this, getContext()).jsonRequest(ANDROIDHIVE_CONTACTS);
+        VolleyPresenter.getInstance(this, getContext()).jsonRequest(FIREBASE_LUGARES);
+
         //updateUI();
     }
 

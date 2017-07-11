@@ -9,13 +9,16 @@ import com.android.volley.RequestQueue;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
 
+import com.android.volley.toolbox.JsonArrayRequest;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
 import com.foromtb.luroga.lugares.BaseView;
 import com.foromtb.luroga.lugares.modelo.Contacto;
 import com.foromtb.luroga.lugares.modelo.Contactos;
+import com.foromtb.luroga.lugares.modelo.Lugar;
 import com.google.gson.Gson;
+import com.google.gson.JsonArray;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -73,7 +76,7 @@ public class VolleyPresenter {
 
     public void jsonRequest (String urlJson){
 
-        JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(
+        JsonObjectRequest jsonObject = new JsonObjectRequest(
                 Request.Method.GET,
                 urlJson, null,
                 new Response.Listener<JSONObject>() {
@@ -92,14 +95,17 @@ public class VolleyPresenter {
                     }
                 });
 
-        getRequestQueue().add(jsonObjectRequest);
+        getRequestQueue().add(jsonObject);
     }
 
     public void getContactos(JSONObject jsonObject){
 
         Gson gson = new Gson();
-        try {
-            JSONArray jsonArray = jsonObject.getJSONArray("contacts");
+        Lugar l = gson.fromJson(jsonObject.toString(), Lugar.class);
+
+
+      /*  try {
+            JSONArray jsonArray = jsonObject.getJSONArray("puertos");
             for (int i =0; i< jsonArray.length();i++){
                 JSONObject j = jsonArray.getJSONObject(i);
                 Contacto c = gson.fromJson(j.toString(),Contacto.class);
@@ -115,7 +121,7 @@ public class VolleyPresenter {
             Log.d(TAG,e.toString());
 
         }
-
+*/
         return;
 
 
