@@ -10,6 +10,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
+import com.foromtb.luroga.lugares.Presenter.VolleyPresenter;
 import com.foromtb.luroga.lugares.modelo.Lugar;
 import com.foromtb.luroga.lugares.modelo.Lugares;
 
@@ -23,6 +24,8 @@ public class ListadoLugares_Fragment extends Fragment {
 
     private RecyclerView mRecyclerView;
     private List<Lugar> mLugares;
+    private final static String POKEMON_JSON="https://raw.githubusercontent.com/BrunnerLivio/PokemonDataGraber/master/output.json";
+    private final static String ANDROIDHIVE_CONTACTS="http://api.androidhive.info/contacts/";
 
     public static ListadoLugares_Fragment newInstance() {
 
@@ -42,7 +45,13 @@ public class ListadoLugares_Fragment extends Fragment {
         mRecyclerView = (RecyclerView)v.findViewById(R.id.recyclerViewListado);
         mRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
         mRecyclerView.setAdapter(new LugarAdaptater(mLugares));
+        init();
         return v;
+    }
+
+    private void init(){
+        //VolleyPresenter.getInstance(getActivity()).VolleyRequest("https://raw.githubusercontent.com/BrunnerLivio/PokemonDataGraber/master/output.json");
+        VolleyPresenter.getInstance(getActivity()).jsonRequest(ANDROIDHIVE_CONTACTS);
     }
 
     private class LugarHolder extends RecyclerView.ViewHolder{
@@ -53,11 +62,11 @@ public class ListadoLugares_Fragment extends Fragment {
         public LugarHolder(LayoutInflater layoutInflater, ViewGroup parent, int viewType){
             super(layoutInflater.inflate(viewType,parent,false));
             //Items de la lista
-            itemLugarNombre= (TextView)itemView.findViewById(R.id.item_list_lugar_nombre);
+            //itemLugarNombre= (TextView)itemView.findViewById(R.id.item_list_lugar_nombre);
         }
 
         private void bind(Lugar l){
-            itemLugarNombre.setText(l.getNombre());
+            //itemLugarNombre.setText(l.getNombre());
         }
     }
 
@@ -89,7 +98,8 @@ public class ListadoLugares_Fragment extends Fragment {
 
         @Override
         public int getItemViewType(int position) {
-            return R.layout.item_list_lugares;
+            //return R.layout.item_list_lugares;
+            return R.layout.item_list_contacto;
         }
     }
 }
