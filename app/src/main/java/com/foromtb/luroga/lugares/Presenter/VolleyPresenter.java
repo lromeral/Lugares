@@ -9,26 +9,17 @@ import com.android.volley.RequestQueue;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
 
-import com.android.volley.toolbox.JsonArrayRequest;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
-import com.foromtb.luroga.lugares.ListadoLugares_Fragment;
+import com.foromtb.luroga.lugares.BaseView;
 import com.foromtb.luroga.lugares.modelo.Contacto;
 import com.foromtb.luroga.lugares.modelo.Contactos;
 import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
-import com.google.gson.JsonArray;
-import com.google.gson.JsonObject;
 
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
-
-import java.lang.reflect.Array;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
 
 /**
  * Created by LuisR on 11/07/2017.
@@ -36,27 +27,29 @@ import java.util.List;
 
 public class VolleyPresenter {
     private final static String TAG ="Luis->" + VolleyPresenter.class.getSimpleName();
-    private static Context sContext;
-    private RequestQueue mRequestQueue;
     private static VolleyPresenter sInstance;
+    private Context mContext;
+    private BaseView mBaseView;
+    private RequestQueue mRequestQueue;
 
-    public static VolleyPresenter getInstance(Context context
-    ) {
+    private VolleyPresenter(BaseView view, Context context) {
+        mContext = context;
+        mBaseView = view;
+
+
+    }
+
+    public static VolleyPresenter getInstance(BaseView view, Context context) {
         if(sInstance == null){
-            sInstance = new VolleyPresenter(context);
+            sInstance = new VolleyPresenter(view, context);
         }
         return sInstance ;
     }
 
-    private VolleyPresenter(Context context){
-        sContext = context;
-        mRequestQueue = Volley.newRequestQueue(sContext);
-        
-    }
-
     private RequestQueue getRequestQueue(){
+        mRequestQueue = Volley.newRequestQueue(mContext);
         if (mRequestQueue == null){
-            mRequestQueue = Volley.newRequestQueue(sContext);
+            mRequestQueue = Volley.newRequestQueue(mContext);
         }
         return  mRequestQueue;
     }
@@ -115,6 +108,7 @@ public class VolleyPresenter {
 
             }
 
+            mBaseView.completeExito(Contactos.getContactos(), 100);
             Log.d (TAG,String.valueOf(Contactos.getContactos().size()));
         }
         catch (JSONException e){

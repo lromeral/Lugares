@@ -12,6 +12,7 @@ import android.widget.TextView;
 
 import com.foromtb.luroga.lugares.Adapter.ContactoAdapter;
 import com.foromtb.luroga.lugares.Presenter.VolleyPresenter;
+import com.foromtb.luroga.lugares.modelo.Contacto;
 import com.foromtb.luroga.lugares.modelo.Contactos;
 import com.foromtb.luroga.lugares.modelo.Lugar;
 import com.foromtb.luroga.lugares.modelo.Lugares;
@@ -22,13 +23,13 @@ import java.util.List;
  * Created by LuisR on 10/07/2017.
  */
 
-public class ListadoLugares_Fragment extends Fragment {
+public class ListadoLugares_Fragment extends Fragment implements BaseView {
 
-    private RecyclerView mRecyclerView;
-    private List<Lugar> mLugares;
     private final static String POKEMON_JSON="https://raw.githubusercontent.com/BrunnerLivio/PokemonDataGraber/master/output.json";
     private final static String ANDROIDHIVE_CONTACTS="http://api.androidhive.info/contacts/";
     private final static String OBJETO_JSON="https://graph.facebook.com/me";
+    private RecyclerView mRecyclerView;
+    private List<Lugar> mLugares;
 
     public static ListadoLugares_Fragment newInstance() {
 
@@ -52,14 +53,24 @@ public class ListadoLugares_Fragment extends Fragment {
         return v;
     }
 
-    public void updateUI(){
-        mRecyclerView.setAdapter(new ContactoAdapter(Contactos.getContactos()));
+    public void updateUI(List<Contacto> contactos) {
+        mRecyclerView.setAdapter(new ContactoAdapter(contactos));
     }
 
     private void init(){
         //VolleyPresenter.getInstance(getActivity()).VolleyRequest("https://raw.githubusercontent.com/BrunnerLivio/PokemonDataGraber/master/output.json");
-        VolleyPresenter.getInstance(getActivity()).jsonRequest(ANDROIDHIVE_CONTACTS);
-        updateUI();
+        VolleyPresenter.getInstance(this, getContext()).jsonRequest(ANDROIDHIVE_CONTACTS);
+        //updateUI();
+    }
+
+    @Override
+    public void completeExito(Object object, int codigo) {
+        updateUI((List<Contacto>) object);
+    }
+
+    @Override
+    public void completeError(Object object, int codigo) {
+
     }
 
     private class LugarHolder extends RecyclerView.ViewHolder{
