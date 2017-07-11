@@ -1,0 +1,55 @@
+{
+  "project_info": {
+    "project_number": "960733409487",
+    "firebase_url": "https://lugares-2b3ff.firebaseio.com",
+    "project_id": "lugares-2b3ff",
+    "storage_bucket": "lugares-2b3ff.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:960733409487:android:0784a3f4c7fd7aa6",
+        "android_client_info": {
+          "package_name": "com.foromtb.luroga.lugares"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "960733409487-vdum0le04mf8j890qk4d05lbf2b48gtk.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.foromtb.luroga.lugares",
+            "certificate_hash": "e7bf491e43d135df72fd2f09242fd1b4b29141c3"
+          }
+        },
+        {
+          "client_id": "960733409487-jg79oe987t0plora0aacd9oqu5t4uu5e.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCV1-1A3bv-0IJ69kBwSjsso2PjBwYMEj4"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 2,
+          "other_platform_oauth_client": [
+            {
+              "client_id": "960733409487-jg79oe987t0plora0aacd9oqu5t4uu5e.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
