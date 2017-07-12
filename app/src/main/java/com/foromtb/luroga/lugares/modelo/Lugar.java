@@ -2,13 +2,15 @@ package com.foromtb.luroga.lugares.modelo;
 
 import android.support.v7.widget.RecyclerView;
 
+import java.util.HashMap;
+import java.util.Map;
 import java.util.UUID;
 
 /**
  * Created by LuisR on 10/07/2017.
  */
 
-public class Lugar {
+public class Lugar implements Lugarable{
     private UUID id;
     private String nombre;
     private String imagen;
@@ -26,7 +28,7 @@ public class Lugar {
     }
 
     public UUID getId() {
-        return id;
+        return this.id;
     }
 
     public String getNombre() {
@@ -67,5 +69,16 @@ public class Lugar {
 
     public void setLatitud(String latitud) {
         this.latitud = latitud;
+    }
+
+    @Override
+    public Map<String, String> toMap() {
+        Map<String,String> mapa = new HashMap<>();
+        mapa.put("id",getId().toString());
+        mapa.put("descripcion",getDescripcion());
+        mapa.put("longitud",getLongitud());
+        mapa.put("latitud",getLatitud());
+        mapa.put("imagen","URL a la imagen - cambiar-");
+        return mapa;
     }
 }

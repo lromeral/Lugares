@@ -2,19 +2,29 @@ package com.foromtb.luroga.lugares.modelo;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 /**
  * Created by LuisR on 10/07/2017.
  */
 
-public abstract class Lugares {
-    private static List<Lugar> sLugares = new ArrayList<>();
+public class Lugares {
+    private static List<Lugar> sLugares;
+    private static Lugares sInstance;
+
+    private Lugares(){
+        sLugares = new ArrayList<>();
+    }
+
+     public static Lugares getInstance() {
+         if (sInstance == null) {
+             sInstance = new Lugares();
+         }
+        return sInstance;
+    }
 
     public static List<Lugar> getLugares() {
-
-        for (int i=0; i<20;i++){
-            sLugares.add(new Lugar("NombreLugar_" + String.valueOf(i)));
-        }
         return sLugares;
     }
+
 }
