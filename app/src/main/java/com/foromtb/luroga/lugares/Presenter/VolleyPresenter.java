@@ -10,20 +10,17 @@ import com.android.volley.Response;
 import com.android.volley.VolleyError;
 
 import com.android.volley.toolbox.JsonObjectRequest;
-import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
 import com.foromtb.luroga.lugares.BaseView;
-import com.foromtb.luroga.lugares.modelo.Contactos;
 import com.foromtb.luroga.lugares.modelo.Lugar;
 import com.foromtb.luroga.lugares.modelo.Lugares;
-import com.google.gson.Gson;
-import com.google.gson.JsonObject;
 
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.net.URL;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Created by LuisR on 11/07/2017.
@@ -31,52 +28,18 @@ import java.net.URL;
 
 public class VolleyPresenter {
     private final static String TAG ="Luis->" + VolleyPresenter.class.getSimpleName();
-    private static VolleyPresenter sInstance;
-    private Context mContext;
     private BaseView mBaseView;
+    private Context mContext;
     private RequestQueue mRequestQueue;
 
-    private VolleyPresenter(BaseView view, Context context) {
+    public VolleyPresenter(BaseView v, Context context) {
         mContext = context;
-        mBaseView = view;
-
-
-    }
-
-    public static VolleyPresenter getInstance(BaseView view, Context context) {
-        if(sInstance == null){
-            sInstance = new VolleyPresenter(view, context);
-        }
-        return sInstance ;
-    }
-
-    private RequestQueue getRequestQueue(){
+        mBaseView = v;
         mRequestQueue = Volley.newRequestQueue(mContext);
-        if (mRequestQueue == null){
-            mRequestQueue = Volley.newRequestQueue(mContext);
-        }
-        return  mRequestQueue;
+
     }
 
-
-    public void volleyRequest(String stringUrl){
-
-        StringRequest stringRequest = new StringRequest(Request.Method.GET, stringUrl, new Response.Listener<String>() {
-            @Override
-            public void onResponse(String response) {
-                Log.d (TAG,"Conectado" + response);
-            }
-        }, new Response.ErrorListener() {
-            @Override
-            public void onErrorResponse(VolleyError error) {
-                Log.d(TAG,"Error " + error.toString());
-            }
-        });
-        getRequestQueue().add(stringRequest);
-    }
-
-    public void jsonRequest (String urlJson){
-
+    public void getLugares(String urlJson){
         JsonObjectRequest jsonObject = new JsonObjectRequest(
                 Request.Method.GET,
                 urlJson, null,
@@ -84,8 +47,7 @@ public class VolleyPresenter {
                     @Override
                     public void onResponse(JSONObject response) {
                         Log.d(TAG,"Array");
-                        getLugares(response);
-
+                        procesaGetLugares(response);
                     }
                 },
                 new Response.ErrorListener() {
@@ -96,46 +58,46 @@ public class VolleyPresenter {
                     }
                 });
 
-        getRequestQueue().add(jsonObject);
+        mRequestQueue.add(jsonObject);
+        return;
     }
 
+    private void procesaGetLugares(JSONObject jsonObcject){
+        List<Lugar> lugares = new ArrayList<>();
 
-    public void getLugares(JSONObject jsonObject){
+        try {
+            JSONObject jsonPadre = jsonObcject.getJSONObject("puertos");
+            JSONArray jsonNombres = jsonPadre.names();
+            JSONObject jsonHijo;
 
-        Gson gson = new Gson();
+            for (int i = 0; i < jsonNombres.length();i++){
+                jsonHijo = jsonPadre.getJSONObject(jsonNombres.get(i).toString());
+                Lugar l = new Lugar();
+                l.setNombre(jsonNombres.get(i).toString());
+                l.setDescripcion(jsonHijo.getString("descripcion"));
+                l.setImagen(jsonHijo.getString("imagen"));
+                l.setLatitud(jsonHijo.getString("latitud"));
+                l.setLongitud(jsonHijo.getString("longitud"));
 
+                lugares.add(l);
 
-      try {
-          JSONObject jsonPadre = jsonObject.getJSONObject("puertos");
-          JSONArray jsonNombres = jsonPadre.names();
-          JSONObject jsonHijo;
-          for (int i = 0; i < jsonNombres.length();i++){
-              jsonHijo = jsonPadre.getJSONObject(jsonNombres.get(i).toString());
-              Lugar l = new Lugar();
-              l.setNombre(jsonNombres.get(i).toString());
-              l.setDescripcion(jsonHijo.getString("descripcion"));
-              l.setImagen(jsonHijo.getString("imagen"));
-              l.setLatitud(jsonHijo.getString("latitud"));
-              l.setLongitud(jsonHijo.getString("longitud"));
-
-              Lugares.getInstance().getLugares().add(l);
-          }
-
-
-
-          Log.d(TAG,String.valueOf(jsonPadre.length()));
+                mBaseView.completeExito(lugares,100);
+                Lugares.setLugares(lugares);
+            }
 
 
-           mBaseView.completeExito(Lugares.getLugares(), 100);
+
+            Log.d(TAG,String.valueOf(jsonPadre.length()));
+
+
         }
         catch (JSONException e){
             Log.d(TAG,e.toString());
 
         }
-        return;
-
 
     }
+
     public void addLugar (Lugar lugar) {
         String urlPut ="https://lugares-2b3ff.firebaseio.com/lugares/puertos/" + lugar.getNombre()+ ".json";
 
@@ -147,17 +109,18 @@ public class VolleyPresenter {
                 new Response.Listener<JSONObject>() {
                     @Override
                     public void onResponse(JSONObject response) {
-                        Log.d(TAG,response.toString());
+                        Log.d(TAG,"VolleyPresenter.addLugar.onResponse -> " + response.toString());
+                        mBaseView.completeExito(response,101);
                     }
                 },
                 new Response.ErrorListener() {
                     @Override
                     public void onErrorResponse(VolleyError error) {
-                        Log.d(TAG,error.toString());
+                        Log.d(TAG,"VolleyPresenter.addLugar.onError-> " + error.toString());
 
                     }
                 }
         );
-        getRequestQueue().add(jsonObjectPut);
+        mRequestQueue.add(jsonObjectPut);
     }
 }
