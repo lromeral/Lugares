@@ -1,30 +1,39 @@
 package com.foromtb.luroga.lugares.modelo;
 
-import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
+import java.util.UUID;
 
 /**
- * Created by LuisR on 10/07/2017.
+ * Created by LuisR on 13/07/2017.
  */
 
-public class Lugares {
-    private static List<Lugar> sLugares;
-    private static Lugares sInstance;
+public class Lugares
 
-    private Lugares(){
-        sLugares = new ArrayList<>();
+{
+    public static List<Lugar> sLugares;
+    private static final Lugares ourInstance = new Lugares();
+
+    public static Lugares getInstance() {
+        return ourInstance;
     }
 
-     public static Lugares getInstance() {
-         if (sInstance == null) {
-             sInstance = new Lugares();
-         }
-        return sInstance;
+    private Lugares() {
     }
 
-    public static List<Lugar> getLugares() {
+    public static List<Lugar>  getLugares(){
         return sLugares;
     }
 
+    public static void setLugares(List<Lugar> lugarList){
+        sLugares = lugarList;
+    }
+
+    public static Lugar getLugar (UUID lugarId){
+        for(Lugar l: getLugares()){
+            if (l.getId().equals(lugarId)){
+                return l;
+            }
+        }
+        return null;
+    }
 }

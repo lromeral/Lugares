@@ -1,12 +1,17 @@
 package com.foromtb.luroga.lugares.Adapter;
 
+import android.content.Intent;
+import android.support.v4.app.Fragment;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
+import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.foromtb.luroga.lugares.R;
 import com.foromtb.luroga.lugares.modelo.Lugar;
+import com.foromtb.luroga.lugares.vistas.Lugar_Activity;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -40,8 +45,11 @@ public class LugarAdapter extends RecyclerView.Adapter<LugarAdapter.LugaresViewH
         return mLugares.size();
     }
 
-    public class LugaresViewHolder extends RecyclerView.ViewHolder{
+    public class LugaresViewHolder extends RecyclerView.ViewHolder
+            implements View.OnClickListener{
+        private static final String EXTRA_LUGAR_ID ="com.foromtb.luroga.lugar_id";
         private TextView lugarNombre, lugarDescripcion, lugarLongitud, lugarLatitud, lugarId;
+        private Lugar mLugar;
 
 
         public LugaresViewHolder(LayoutInflater inflater, ViewGroup parent, int viewType){
@@ -51,9 +59,13 @@ public class LugarAdapter extends RecyclerView.Adapter<LugarAdapter.LugaresViewH
             lugarLatitud = (TextView)itemView.findViewById(R.id.item_lugar_latitud);
             lugarLongitud = (TextView)itemView.findViewById(R.id.item_lugar_longitud);
             lugarId =(TextView)itemView.findViewById(R.id.item_lugar_id);
+
+            itemView.setOnClickListener(this);
         }
 
         protected void bind (Lugar lugar){
+            mLugar = lugar;
+
             lugarNombre.setText(lugar.getNombre());
             lugarId.setText(lugar.getId().toString());
             lugarDescripcion.setText(lugar.getDescripcion());
@@ -62,6 +74,13 @@ public class LugarAdapter extends RecyclerView.Adapter<LugarAdapter.LugaresViewH
         }
 
 
-
+        @Override
+        public void onClick(View v) {
+            //TODO: onClickListener del RecyclerView para cargar
+            Intent i = Lugar_Activity.newIntent(itemView.getContext(),mLugar.getId());
+            i.putExtra(EXTRA_LUGAR_ID,mLugar.getId());
+            itemView.getContext().startActivity(i);
+            Toast.makeText(itemView.getContext(),mLugar.getNombre(),Toast.LENGTH_SHORT).show();
+        }
     }
 }
