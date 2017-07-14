@@ -9,10 +9,8 @@ import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentStatePagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
-import android.view.View;
 
 import com.foromtb.luroga.lugares.R;
-import com.foromtb.luroga.lugares.SingleFragmentLoader;
 import com.foromtb.luroga.lugares.modelo.Lugar;
 import com.foromtb.luroga.lugares.modelo.Lugares;
 

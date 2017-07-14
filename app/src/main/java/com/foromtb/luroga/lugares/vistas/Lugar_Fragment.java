@@ -7,12 +7,15 @@ import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
 
-import com.foromtb.luroga.lugares.BaseView;
+import com.foromtb.luroga.lugares.utils.BaseView;
 import com.foromtb.luroga.lugares.MainActivity;
 import com.foromtb.luroga.lugares.Presenter.VolleyPresenter;
 import com.foromtb.luroga.lugares.R;
@@ -54,6 +57,7 @@ public class Lugar_Fragment extends Fragment implements BaseView {
         super.onCreate(savedInstanceState);
         mLugarId= (UUID)getArguments().get(ARG_LUGAR_ID);
         mLugar = Lugares.getLugar(mLugarId);
+        setHasOptionsMenu(true);
 
     }
 
@@ -79,6 +83,7 @@ public class Lugar_Fragment extends Fragment implements BaseView {
             @Override
             public void onClick(View v) {
                 Lugar l = new Lugar();
+                l.setId(UUID.randomUUID());
                 l.setNombre(mNuevoNombre.getText().toString());
                 l.setDescripcion(mNuevoDescripcion.getText().toString());
                 l.setLongitud(mNuevoLongitud.getText().toString());
@@ -90,6 +95,32 @@ public class Lugar_Fragment extends Fragment implements BaseView {
         return v;
     }
 
+    @Override
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+        super.onCreateOptionsMenu(menu, inflater);
+        inflater.inflate(R.menu.lugar_menu,menu);
+
+
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()){
+            case R.id.item_borrar:
+                new VolleyPresenter(this,getContext()).deleteLugar(mLugar);
+                getActivity().finish();
+                //Intent i = MainActivity.newIntent(getContext());
+                //startActivity(i);
+
+                return true;
+            default:
+                return super.onOptionsItemSelected(item);
+        }
+
+
+    }
+
+    //TODO: Los codigos de completado. Añadir switch case
     @Override
     public void completeExito(Object object, int codigo) {
         Intent i = new Intent();

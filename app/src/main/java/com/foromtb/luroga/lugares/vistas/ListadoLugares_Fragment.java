@@ -1,4 +1,4 @@
-package com.foromtb.luroga.lugares;
+package com.foromtb.luroga.lugares.vistas;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -7,9 +7,7 @@ import android.support.v4.app.Fragment;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.support.v7.widget.helper.ItemTouchHelper;
 import android.util.Log;
-import android.view.DragEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -18,17 +16,19 @@ import android.widget.Toast;
 
 import com.foromtb.luroga.lugares.Adapter.LugarAdapter;
 import com.foromtb.luroga.lugares.Presenter.VolleyPresenter;
+import com.foromtb.luroga.lugares.R;
 import com.foromtb.luroga.lugares.modelo.Lugar;
 import com.foromtb.luroga.lugares.modelo.Lugares;
-import com.foromtb.luroga.lugares.vistas.Lugar_Activity;
+import com.foromtb.luroga.lugares.utils.BaseView;
 
 import java.util.List;
+import java.util.UUID;
 
 /**
  * Created by LuisR on 10/07/2017.
  */
 
-public class ListadoLugares_Fragment extends Fragment implements BaseView{
+public class ListadoLugares_Fragment extends Fragment implements BaseView {
 
 
     private final static String FIREBASE_LUGARES = "https://lugares-2b3ff.firebaseio.com/lugares.json";
@@ -58,6 +58,7 @@ public class ListadoLugares_Fragment extends Fragment implements BaseView{
         super.onResume();
         if(mLugaresAdapter!=null){
             mLugaresAdapter.notifyDataSetChanged();
+            updateUI();
         }
 
     }
@@ -73,7 +74,7 @@ public class ListadoLugares_Fragment extends Fragment implements BaseView{
             @Override
             public void onClick(View v) {
                 //
-                Lugar nuevoLugar = new Lugar();
+                Lugar nuevoLugar = new Lugar(UUID.randomUUID());
                 Lugares.getLugares().add(nuevoLugar);
                 Intent i = Lugar_Activity.newIntent(getContext(),nuevoLugar.getId());
                 startActivityForResult(i,REQUEST_NUEVO_LUGAR);
@@ -88,19 +89,28 @@ public class ListadoLugares_Fragment extends Fragment implements BaseView{
             @Override
             public void onRefresh() {
                 Toast.makeText(getContext(),"Actualizado",Toast.LENGTH_SHORT).show();
+                updateData();
                 updateUI();
-                mSwipeRefreshLayout.setRefreshing(false);
-
             }
         });
 
+        updateData();
         updateUI();
+
 
         return v;
     }
 
-    public void updateUI() {
+    public void updateData(){
         mVolleyPresenter.getLugares(FIREBASE_LUGARES);
+    }
+
+    public void updateUI() {
+        if(mSwipeRefreshLayout.isRefreshing()) {
+            mLugaresAdapter.notifyDataSetChanged();
+            mRecyclerView.invalidate();
+            mSwipeRefreshLayout.setRefreshing(false);
+        }
     }
 
     @Override

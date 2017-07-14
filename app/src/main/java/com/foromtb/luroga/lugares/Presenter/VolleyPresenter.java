@@ -11,7 +11,7 @@ import com.android.volley.VolleyError;
 
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.Volley;
-import com.foromtb.luroga.lugares.BaseView;
+import com.foromtb.luroga.lugares.utils.BaseView;
 import com.foromtb.luroga.lugares.modelo.Lugar;
 import com.foromtb.luroga.lugares.modelo.Lugares;
 
@@ -19,8 +19,10 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 
 /**
  * Created by LuisR on 11/07/2017.
@@ -31,6 +33,8 @@ public class VolleyPresenter {
     private BaseView mBaseView;
     private Context mContext;
     private RequestQueue mRequestQueue;
+    private final String URL_BASE_PUERTOS ="https://lugares-2b3ff.firebaseio.com/lugares/puertos/";
+    private final int JSON_DELETE = 103;
 
     public VolleyPresenter(BaseView v, Context context) {
         mContext = context;
@@ -73,6 +77,7 @@ public class VolleyPresenter {
             for (int i = 0; i < jsonNombres.length();i++){
                 jsonHijo = jsonPadre.getJSONObject(jsonNombres.get(i).toString());
                 Lugar l = new Lugar();
+                l.setId(UUID.fromString(jsonHijo.getString("id")));
                 l.setNombre(jsonNombres.get(i).toString());
                 l.setDescripcion(jsonHijo.getString("descripcion"));
                 l.setImagen(jsonHijo.getString("imagen"));
@@ -99,7 +104,7 @@ public class VolleyPresenter {
     }
 
     public void addLugar (Lugar lugar) {
-        String urlPut ="https://lugares-2b3ff.firebaseio.com/lugares/puertos/" + lugar.getNombre()+ ".json";
+        String urlPut =URL_BASE_PUERTOS + lugar.getNombre()+ ".json";
 
         JSONObject jsonObject = new JSONObject(lugar.toMap());
         JsonObjectRequest jsonObjectPut = new JsonObjectRequest(
@@ -122,5 +127,32 @@ public class VolleyPresenter {
                 }
         );
         mRequestQueue.add(jsonObjectPut);
+    }
+
+    public void deleteLugar (Lugar lugar){
+        String urlDel =URL_BASE_PUERTOS + lugar.getNombre()+ ".json";
+
+        JSONObject jsonObject = new JSONObject(lugar.toMap());
+        JsonObjectRequest jsonObjectPut = new JsonObjectRequest(
+                Request.Method.DELETE,
+                urlDel,
+                jsonObject,
+                new Response.Listener<JSONObject>() {
+                    @Override
+                    public void onResponse(JSONObject response) {
+                        Log.d(TAG,"VolleyPresenter.delete.onResponse -> " + response.toString());
+                        mBaseView.completeExito(response,JSON_DELETE);
+                    }
+                },
+                new Response.ErrorListener() {
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+                        Log.d(TAG,"VolleyPresenter.delete.onError-> " + error.toString());
+
+                    }
+                }
+        );
+        mRequestQueue.add(jsonObjectPut);
+
     }
 }

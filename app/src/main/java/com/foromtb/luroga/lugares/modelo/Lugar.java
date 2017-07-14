@@ -19,16 +19,23 @@ public class Lugar implements Lugarable{
     private String latitud;
 
     public Lugar() {
-        this.id = UUID.randomUUID();
     }
 
+    public Lugar (UUID idLugar){
+        this.id = idLugar;
+    }
+
+
     public Lugar(String nombre) {
-        this();
         this.nombre = nombre;
     }
 
     public UUID getId() {
         return this.id;
+    }
+
+    public void setId(UUID id) {
+        this.id = id;
     }
 
     public String getNombre() {

@@ -4,6 +4,9 @@ import android.content.Context;
 import android.content.Intent;
 import android.support.v4.app.Fragment;
 
+import com.foromtb.luroga.lugares.utils.SingleFragmentLoader;
+import com.foromtb.luroga.lugares.vistas.ListadoLugares_Fragment;
+
 public class MainActivity extends SingleFragmentLoader {
 
     @Override

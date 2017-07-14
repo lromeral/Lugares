@@ -1,4 +1,4 @@
-package com.foromtb.luroga.lugares;
+package com.foromtb.luroga.lugares.utils;
 
 import android.content.Context;
 
