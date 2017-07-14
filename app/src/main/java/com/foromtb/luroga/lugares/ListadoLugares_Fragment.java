@@ -4,9 +4,12 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.helper.ItemTouchHelper;
 import android.util.Log;
+import android.view.DragEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -36,9 +39,10 @@ public class ListadoLugares_Fragment extends Fragment implements BaseView{
     private RecyclerView mRecyclerView;
     private Button mBotonAnadir;
     private VolleyPresenter mVolleyPresenter;
-    private Lugar lugarPrueba;
+    private List<Lugar> mLugarList;
     private RecyclerView.Adapter mLugaresAdapter;
     private LinearLayoutManager linearLayoutManager;
+    private SwipeRefreshLayout mSwipeRefreshLayout;
 
     public static ListadoLugares_Fragment newInstance() {
 
@@ -77,45 +81,26 @@ public class ListadoLugares_Fragment extends Fragment implements BaseView{
             }
         });
         mRecyclerView = (RecyclerView)v.findViewById(R.id.recyclerViewListado);
-
         linearLayoutManager =new LinearLayoutManager(getActivity());
         mRecyclerView.setLayoutManager(linearLayoutManager);
-        mRecyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
+        mSwipeRefreshLayout = (SwipeRefreshLayout)v.findViewById(R.id.swipelayout);
+        mSwipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
-            public void onScrollStateChanged(RecyclerView recyclerView, int newState) {
-                super.onScrollStateChanged(recyclerView, newState);
-            }
-
-            @Override
-            public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
-                super.onScrolled(recyclerView, dx, dy);
-                int inicio =linearLayoutManager.findFirstCompletelyVisibleItemPosition();
-
-                if (inicio ==0){
-                   Toast.makeText(getContext(),"Arriba " + String.valueOf(dy),Toast.LENGTH_SHORT).show();
-                }
+            public void onRefresh() {
+                Toast.makeText(getContext(),"Actualizado",Toast.LENGTH_SHORT).show();
+                updateUI();
+                mSwipeRefreshLayout.setRefreshing(false);
 
             }
         });
 
-
-
-
-
-        init();
+        updateUI();
 
         return v;
     }
 
-    public void updateUI(List<Lugar> lugares) {
-        mLugaresAdapter = new LugarAdapter(lugares);
-        mRecyclerView.setAdapter(mLugaresAdapter);
-    }
-
-    private void init(){
+    public void updateUI() {
         mVolleyPresenter.getLugares(FIREBASE_LUGARES);
-
-        //updateUI();
     }
 
     @Override
@@ -128,7 +113,9 @@ public class ListadoLugares_Fragment extends Fragment implements BaseView{
 
     @Override
     public void completeExito(Object object, int codigo) {
-        updateUI((List<Lugar>)object);
+        mLugarList = (List<Lugar>)object;
+        mLugaresAdapter = new LugarAdapter(mLugarList);
+        mRecyclerView.setAdapter(mLugaresAdapter);
 
     }
 

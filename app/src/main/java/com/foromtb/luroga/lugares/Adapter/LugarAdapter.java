@@ -62,7 +62,7 @@ public class LugarAdapter extends RecyclerView.Adapter<LugarAdapter.LugaresViewH
 
             itemView.setOnClickListener(this);
         }
-
+        //TODO:El ID lo cambia de vez en cuando al actualizar
         protected void bind (Lugar lugar){
             mLugar = lugar;
 
@@ -76,7 +76,6 @@ public class LugarAdapter extends RecyclerView.Adapter<LugarAdapter.LugaresViewH
 
         @Override
         public void onClick(View v) {
-            //TODO: onClickListener del RecyclerView para cargar
             Intent i = Lugar_Activity.newIntent(itemView.getContext(),mLugar.getId());
             i.putExtra(EXTRA_LUGAR_ID,mLugar.getId());
             itemView.getContext().startActivity(i);
