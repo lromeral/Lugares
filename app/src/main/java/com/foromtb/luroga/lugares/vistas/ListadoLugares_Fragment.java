@@ -12,6 +12,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.RatingBar;
 import android.widget.Toast;
 
 import com.foromtb.luroga.lugares.Adapter.LugarAdapter;
@@ -44,6 +45,10 @@ public class ListadoLugares_Fragment extends Fragment implements BaseView {
     private LinearLayoutManager linearLayoutManager;
     private SwipeRefreshLayout mSwipeRefreshLayout;
 
+
+
+    private Lugares mLugares = Lugares.getInstance();
+
     public static ListadoLugares_Fragment newInstance() {
 
         Bundle args = new Bundle();
@@ -75,7 +80,7 @@ public class ListadoLugares_Fragment extends Fragment implements BaseView {
             public void onClick(View v) {
                 //
                 Lugar nuevoLugar = new Lugar(UUID.randomUUID());
-                Lugares.getLugares().add(nuevoLugar);
+                mLugares.getLugares().add(nuevoLugar);
                 Intent i = Lugar_Activity.newIntent(getContext(),nuevoLugar.getId());
                 startActivityForResult(i,REQUEST_NUEVO_LUGAR);
 
@@ -98,6 +103,7 @@ public class ListadoLugares_Fragment extends Fragment implements BaseView {
         updateUI();
 
 
+
         return v;
     }
 
@@ -107,9 +113,12 @@ public class ListadoLugares_Fragment extends Fragment implements BaseView {
 
     public void updateUI() {
         if(mSwipeRefreshLayout.isRefreshing()) {
+
+            mSwipeRefreshLayout.setRefreshing(false);
+        }
+        if(mLugaresAdapter != null) {
             mLugaresAdapter.notifyDataSetChanged();
             mRecyclerView.invalidate();
-            mSwipeRefreshLayout.setRefreshing(false);
         }
     }
 
@@ -123,9 +132,25 @@ public class ListadoLugares_Fragment extends Fragment implements BaseView {
 
     @Override
     public void completeExito(Object object, int codigo) {
-        mLugarList = (List<Lugar>)object;
-        mLugaresAdapter = new LugarAdapter(mLugarList);
-        mRecyclerView.setAdapter(mLugaresAdapter);
+        switch (codigo){
+            case VolleyPresenter.CODIGO_IMAGEN: //Imagen
+                updateUI();
+                break;
+            case VolleyPresenter.CODIGO_GET: //ProcesaLugares
+                mLugarList = (List<Lugar>)object;
+                mLugares.setLugares(mLugarList);
+                mLugaresAdapter = new LugarAdapter(mLugarList);
+                mRecyclerView.setAdapter(mLugaresAdapter);
+                break;
+            case VolleyPresenter.CODIGO_DELETE:
+                updateUI();
+                break;
+            default: return;
+        }
+
+
+
+
 
     }
 

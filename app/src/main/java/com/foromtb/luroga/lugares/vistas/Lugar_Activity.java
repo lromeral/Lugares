@@ -23,6 +23,7 @@ public class Lugar_Activity extends AppCompatActivity{
     private ViewPager mViewPager;
     private UUID mLugarId;
     private List<Lugar> mLugarList;
+    private Lugares mLugares = Lugares.getInstance();
 
     public static Intent newIntent(Context context, UUID lugarId){
         Intent intent = new Intent(context,Lugar_Activity.class);
@@ -38,7 +39,7 @@ public class Lugar_Activity extends AppCompatActivity{
         mViewPager = (ViewPager)findViewById(R.id.lugar_viewpager);
 
         mLugarId = (UUID)getIntent().getSerializableExtra(EXTRA_LUGAR_ID);
-        mLugarList = Lugares.getLugares();
+        mLugarList = mLugares.getLugares();
 
 
         FragmentManager fm = getSupportFragmentManager();
@@ -52,13 +53,13 @@ public class Lugar_Activity extends AppCompatActivity{
 
             @Override
             public int getCount() {
-                return Lugares.getLugares().size();
+                return mLugares.getLugares().size();
             }
         });
 
         //Coloca el pager en el lugarid adecuado
-        for (int i=0;i < Lugares.getLugares().size(); i++){
-            if(Lugares.getLugares().get(i).getId().equals(mLugarId)){
+        for (int i=0;i < mLugares.getLugares().size(); i++){
+            if(mLugares.getLugares().get(i).getId().equals(mLugarId)){
                 mViewPager.setCurrentItem(i);
                 break;
             }

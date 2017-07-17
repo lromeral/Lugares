@@ -1,7 +1,10 @@
 package com.foromtb.luroga.lugares.modelo;
 
-import android.support.v7.widget.RecyclerView;
+import android.graphics.Bitmap;
 
+import com.google.gson.annotations.SerializedName;
+
+import java.io.Serializable;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
@@ -10,13 +13,16 @@ import java.util.UUID;
  * Created by LuisR on 10/07/2017.
  */
 
-public class Lugar implements Lugarable{
+public class Lugar implements Lugarable, Serializable{
     private UUID id;
     private String nombre;
-    private String imagen;
+    private String imagenUrl;
     private String descripcion;
     private String longitud;
     private String latitud;
+    @SerializedName("rating")
+    private float valoracion;
+    private Bitmap imagen;
 
     public Lugar() {
     }
@@ -46,12 +52,12 @@ public class Lugar implements Lugarable{
         this.nombre = nombre;
     }
 
-    public String getImagen() {
-        return imagen;
+    public String getImagenUrl() {
+        return imagenUrl;
     }
 
-    public void setImagen(String imagen) {
-        this.imagen = imagen;
+    public void setImagenUrl(String imagenUrl) {
+        this.imagenUrl = imagenUrl;
     }
 
     public String getDescripcion() {
@@ -78,14 +84,32 @@ public class Lugar implements Lugarable{
         this.latitud = latitud;
     }
 
+    public float getValoracion() {
+        return valoracion;
+    }
+
+    public void setValoracion(float valoracion) {
+        this.valoracion = valoracion;
+    }
+
+    public Bitmap getImagen() {
+        return imagen;
+    }
+
+    public void setImagen(Bitmap imagen) {
+        this.imagen = imagen;
+    }
+
     @Override
     public Map<String, String> toMap() {
         Map<String,String> mapa = new HashMap<>();
         mapa.put("id",getId().toString());
+        mapa.put("nombre", getNombre());
         mapa.put("descripcion",getDescripcion());
         mapa.put("longitud",getLongitud());
         mapa.put("latitud",getLatitud());
-        mapa.put("imagen","URL a la imagen - cambiar-");
+        mapa.put("imagenUrl","http://www.altimetrias.net/Navarra/Artesiaga1.gif");
+        mapa.put ("rating",String.valueOf(valoracion));
         return mapa;
     }
 }

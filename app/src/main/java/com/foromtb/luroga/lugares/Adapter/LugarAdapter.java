@@ -6,6 +6,8 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
+import android.widget.RatingBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -50,6 +52,8 @@ public class LugarAdapter extends RecyclerView.Adapter<LugarAdapter.LugaresViewH
         private static final String EXTRA_LUGAR_ID ="com.foromtb.luroga.lugar_id";
         private TextView lugarNombre, lugarDescripcion, lugarLongitud, lugarLatitud, lugarId;
         private Lugar mLugar;
+        private RatingBar lugarValoracion;
+        private ImageView lugarImagen;
 
 
         public LugaresViewHolder(LayoutInflater inflater, ViewGroup parent, int viewType){
@@ -59,10 +63,11 @@ public class LugarAdapter extends RecyclerView.Adapter<LugarAdapter.LugaresViewH
             lugarLatitud = (TextView)itemView.findViewById(R.id.item_lugar_latitud);
             lugarLongitud = (TextView)itemView.findViewById(R.id.item_lugar_longitud);
             lugarId =(TextView)itemView.findViewById(R.id.item_lugar_id);
+            lugarValoracion = (RatingBar)itemView.findViewById(R.id.item_lugar_valoracion);
+            lugarImagen = (ImageView)itemView.findViewById(R.id.item_lugar_imagen);
 
             itemView.setOnClickListener(this);
         }
-        //TODO:El ID lo cambia de vez en cuando al actualizar
         protected void bind (Lugar lugar){
             mLugar = lugar;
 
@@ -71,6 +76,9 @@ public class LugarAdapter extends RecyclerView.Adapter<LugarAdapter.LugaresViewH
             lugarDescripcion.setText(lugar.getDescripcion());
             lugarLatitud.setText(lugar.getLatitud());
             lugarLongitud.setText(lugar.getLongitud());
+            lugarValoracion.setRating(lugar.getValoracion());
+            lugarImagen.setImageBitmap(lugar.getImagen());
+
         }
 
 
